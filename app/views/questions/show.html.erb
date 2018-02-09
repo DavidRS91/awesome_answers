@@ -1,0 +1,60 @@
+<h2><%= @question.title %></h2>
+
+<p><%= @question.body %></p>
+
+<p><small>
+  Posted <%= time_ago_in_words(@question.created_at)%> ago
+  •
+  Last edited <%= time_ago_in_words @question.updated_at %> ago
+  •
+  View Count: <%= @question.view_count %>
+</small></p>
+
+
+
+<div class="">
+   <%= link_to 'Edit', edit_question_path(@question) %>
+   |
+   <%= link_to 'Delete',
+    question_path(@question),
+    method: :delete,
+    data: {
+      confirm: 'Are you sure?'
+    }
+    %>
+</div>
+
+<h3>Answers</h3>
+
+<%= form_for [@question,@answer] do |f| %>
+<% if @answer.errors.present? %>
+  <%= @answer.errors.full_messages.join(', ') %>
+<% end %>
+<div class="">
+  <%= f.text_area :body, placeholder: "What's on your mind?" %>
+</div>
+<%= f.submit "Answer Question" %>
+<% end %>
+
+<hr>
+<div class="answer-list">
+  <% @answers.each do |answer| %>
+    <div class="answer-list-item">
+      <p><%= answer.body %><br>
+        <small>
+        Answered <%= time_ago_in_words(answer.created_at)%> ago •
+      </small>
+      <small>
+        <%= link_to 'Delete',
+         answer_path(answer),
+         method: :delete,
+         data: {
+           confirm: 'Are you sure?'
+         }
+         %>
+      </small></p>
+      <hr>
+
+    </div>
+  <% end %>
+</div>

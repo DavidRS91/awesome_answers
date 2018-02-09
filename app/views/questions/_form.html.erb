@@ -1,0 +1,19 @@
+
+<%= form_for @question do |f| %>
+<%# ☝🏻 tells rails we want a new form for our Question class %>
+<% if @question.errors.present? %>
+  <p><%= @question.errors.full_messages.join(', ') %></p>
+  <% end %>
+<div class="">
+  <%= f.label :title %>
+  <%= f.text_field :title, class: "form-control" %>
+</div>
+
+<div class="">
+  <%= f.label :body %>
+  <%= f.text_area :body, class: "form-control" %>
+</div>
+
+<%= f.submit %>
+
+<% end %>
