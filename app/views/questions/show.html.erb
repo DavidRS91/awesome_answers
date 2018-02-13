@@ -8,6 +8,8 @@
   Last edited <%= time_ago_in_words @question.updated_at %> ago
   •
   View Count: <%= @question.view_count %>
+  •
+  By: <%= @question.user&.full_name || '[DELETED]' %>
 </small></p>
 
 
@@ -43,6 +45,7 @@
       <p><%= answer.body %><br>
         <small>
         Answered <%= time_ago_in_words(answer.created_at)%> ago •
+        By: <%= answer.user&.full_name || '[DELETED]' %> •
       </small>
       <small>
         <%= link_to 'Delete',

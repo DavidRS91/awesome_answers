@@ -1,4 +1,5 @@
 class QuestionsController < ApplicationController
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :find_question, except: [:index, :create, :new]
   def index
     # Instance (@name) variables defined in controllers are equally accessible inside templates
@@ -13,6 +14,7 @@ class QuestionsController < ApplicationController
 
   def create
     @question = Question.new question_params
+    @question.user = current_user
 
     if @question.save
       redirect_to question_path(@question)
