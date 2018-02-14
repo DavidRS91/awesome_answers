@@ -15,6 +15,7 @@
 
 
 <div class="">
+  <% if can?(:manage, @question) %>
    <%= link_to 'Edit', edit_question_path(@question) %>
    |
    <%= link_to 'Delete',
@@ -24,6 +25,7 @@
       confirm: 'Are you sure?'
     }
     %>
+    <% end %>
 </div>
 
 <h3>Answers</h3>
@@ -45,9 +47,11 @@
       <p><%= answer.body %><br>
         <small>
         Answered <%= time_ago_in_words(answer.created_at)%> ago •
-        By: <%= answer.user&.full_name || '[DELETED]' %> •
+        By: <%= answer.user&.full_name || '[DELETED]' %>
       </small>
+      <% if can?(:manage, answer) %>
       <small>
+        •
         <%= link_to 'Delete',
          answer_path(answer),
          method: :delete,
@@ -55,7 +59,9 @@
            confirm: 'Are you sure?'
          }
          %>
-      </small></p>
+      </small>
+    <% end %>
+  </p>
       <hr>
 
     </div>

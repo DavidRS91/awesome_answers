@@ -1,6 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :find_question, except: [:index, :create, :new]
+  before_action :authorize_user!, only: [:edit, :update, :destroy] 
   def index
     # Instance (@name) variables defined in controllers are equally accessible inside templates
     # Use them to pass data to your views
@@ -60,6 +61,13 @@ class QuestionsController < ApplicationController
     #require will extract a nested hash from the params by its keys name
     params.require(:question).permit(:title, :body)
 
+  end
+
+  def authorize_user!
+    unless can?(:manage, @question)
+      flash[:alert] = 'Access Denied!'
+      redirect_to question_path(@question)
+    end
   end
 
 
