@@ -1,7 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :find_question, except: [:index, :create, :new]
-  before_action :authorize_user!, only: [:edit, :update, :destroy] 
+  before_action :authorize_user!, only: [:edit, :update, :destroy]
   def index
     # Instance (@name) variables defined in controllers are equally accessible inside templates
     # Use them to pass data to your views
@@ -48,6 +48,7 @@ class QuestionsController < ApplicationController
 
     @answers = @question.answers
     @answer = Answer.new
+    @like = @question.likes.find_by_user_id current_user if user_signed_in?
     # render json: @question
   end
 

@@ -3,7 +3,9 @@ class Question < ApplicationRecord
 
   # Database Relationships
   has_many :answers, dependent: :destroy
-
+  has_many :likes, dependent: :destroy
+  has_many :users, through: :likes
+  has_many :user_likes, through: :likes, source: :user
   # Validations
   validates :title, presence: true, uniqueness: true
   validates :body, presence: {message: "must be given"}, length: {minimum: 5, maximum: 2000}
