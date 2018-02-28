@@ -60,7 +60,7 @@ class QuestionsController < ApplicationController
 
   def question_params
     #require will extract a nested hash from the params by its keys name
-    params.require(:question).permit(:title, :body)
+    params.require(:question).permit(:title, :body, tag_ids: [])
 
   end
 

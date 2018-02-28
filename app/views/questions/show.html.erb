@@ -1,3 +1,11 @@
+<div class="tag-list">
+  <% @question.tags.order(:name).each do |tag| %>
+    <span class="badge badge-pill badge-primary">
+      <%= tag.name %>
+    </span>
+  <% end %>
+</div>
+
 <h2><%= @question.title %></h2>
 
 <p><%= @question.body %></p>

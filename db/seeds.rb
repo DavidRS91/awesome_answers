@@ -10,6 +10,7 @@ PASSWORD = 'supersecret'
  User.destroy_all
  Answer.destroy_all
  Question.destroy_all
+ Tag.destroy_all
 
 super_user = User.create(
   first_name: 'Jon',
@@ -33,6 +34,14 @@ end
 
 users = User.all
 
+30.times.each do
+  Tag.create(
+    name: Faker::Book.genre
+  )
+end
+
+tags = Tag.all
+
  1000.times.each do
    q = Question.create(
      title: Faker::Dog.name,
@@ -49,7 +58,9 @@ users = User.all
      )
    end
  end
- end
+ q.tags = tags.shuffle.slice(0..rand(5))
+ q.user_likes = users.shuffle.slice(0..rand(users.count))
+end
 
  questions = Question.all
  answers = Answer.all
@@ -57,4 +68,5 @@ users = User.all
  puts Cowsay.say "Created #{questions.count} questions", :ghostbusters
  puts Cowsay.say "Created #{answers.count} answers", :sheep
  puts Cowsay.say "Created #{users.count} users", :tux
+ puts Cowsay.say "Created #{tags.count} tags", :tux
  puts "Login as admin with #{super_user.email} and password of #{PASSWORD}"
