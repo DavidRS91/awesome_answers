@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180228211914) do
+ActiveRecord::Schema.define(version: 20180314212537) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,33 @@ ActiveRecord::Schema.define(version: 20180228211914) do
     t.bigint "user_id"
     t.index ["question_id"], name: "index_answers_on_question_id"
     t.index ["user_id"], name: "index_answers_on_user_id"
+  end
+
+  create_table "delayed_jobs", force: :cascade do |t|
+    t.integer "priority", default: 0, null: false
+    t.integer "attempts", default: 0, null: false
+    t.text "handler", null: false
+    t.text "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string "locked_by"
+    t.string "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "sluggable_id", null: false
+    t.string "sluggable_type", limit: 50
+    t.string "scope"
+    t.datetime "created_at"
+    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
+    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
+    t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
   end
 
   create_table "job_posts", force: :cascade do |t|
@@ -48,6 +75,14 @@ ActiveRecord::Schema.define(version: 20180228211914) do
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
+  create_table "options", force: :cascade do |t|
+    t.string "body"
+    t.bigint "survey_question_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["survey_question_id"], name: "index_options_on_survey_question_id"
+  end
+
   create_table "questions", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -55,7 +90,16 @@ ActiveRecord::Schema.define(version: 20180228211914) do
     t.datetime "updated_at", null: false
     t.integer "view_count"
     t.bigint "user_id"
+    t.string "slug"
+    t.string "image"
+    t.index ["slug"], name: "index_questions_on_slug", unique: true
     t.index ["user_id"], name: "index_questions_on_user_id"
+  end
+
+  create_table "survey_questions", force: :cascade do |t|
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "taggings", force: :cascade do |t|
@@ -84,12 +128,25 @@ ActiveRecord::Schema.define(version: 20180228211914) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  create_table "votes", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "answer_id"
+    t.boolean "is_up"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["answer_id"], name: "index_votes_on_answer_id"
+    t.index ["user_id"], name: "index_votes_on_user_id"
+  end
+
   add_foreign_key "answers", "questions"
   add_foreign_key "answers", "users"
   add_foreign_key "job_posts", "users"
   add_foreign_key "likes", "questions"
   add_foreign_key "likes", "users"
+  add_foreign_key "options", "survey_questions"
   add_foreign_key "questions", "users"
   add_foreign_key "taggings", "questions"
   add_foreign_key "taggings", "tags"
+  add_foreign_key "votes", "answers"
+  add_foreign_key "votes", "users"
 end

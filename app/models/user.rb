@@ -4,6 +4,8 @@ class User < ApplicationRecord
   has_many :job_posts, dependent: :nullify
   has_many :likes, dependent: :destroy
   has_many :liked_questions, through: :likes, source: :question
+  has_many :votes, dependent: :destroy
+  has_many :voted_answers, through: :votes, source: :answer
 
   has_secure_password
   validates :first_name, :last_name, presence: true

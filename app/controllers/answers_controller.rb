@@ -8,6 +8,9 @@ class AnswersController < ApplicationController
     @answer.user = current_user
 
     if @answer.save
+      AnswerMailer
+      .notify_question_owner(@answer)
+      .deliver_later(wait: 10.seconds)
       redirect_to question_path(@question)
     else
       @answers = @question.answers.order(created_at: :desc)

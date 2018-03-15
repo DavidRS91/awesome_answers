@@ -51,15 +51,25 @@ tags = Tag.all
    )
    if q.valid?
    rand(0..10).times.each do
-     Answer.create(
+     a = Answer.create(
        body: Faker::Seinfeld.quote,
        question: q,
        user: users.sample
      )
+     users.shuffle.slice(0..rand(users.count)).each do |user|
+       Vote.create(
+         answer: a,
+         user: user,
+         is_up: [true,false].sample
+       )
+     end
+
    end
+
  end
  q.tags = tags.shuffle.slice(0..rand(5))
  q.user_likes = users.shuffle.slice(0..rand(users.count))
+
 end
 
  questions = Question.all

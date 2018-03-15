@@ -1,5 +1,33 @@
 Rails.application.routes.draw do
+
+
+
+  resources :survey_questions, only:[:create, :new]
+
+
+  namespace :api, defaults: {format: :json} do
+     namespace :v1 do
+       resources :questions
+       resources :tokens, only: [:create]
+     end
+
+     # The following route will match any URL that hasn't been
+     # matched already inside the :api namespace.
+     # This possible with the prefix of "*" for the route's path.
+     # (i.e. "*unmatched_route".) `match` can also handle
+     # multiple HTTP verbs at a time with the via: option.
+     # via: can take an array of http verbs (e.g. [:get, :post])
+     # or :all for all verbs.
+     match "*unmatched_route", to: "application#not_found", via: :all
+   end
+
+
+
+
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+match '/delayed_job', to: DelayedJobWeb, anchor: false, via: [:get, :post]
 
   namespace :admin do #namespace method takes a symbol for the first arg and a block, it will prefix the path of all routes defined within the block with the symbols name
     resources :dashboard, only: [:index]
@@ -7,6 +35,10 @@ Rails.application.routes.draw do
     #it will expect that the controllers for the routes inside block will be contained in a module after the symbol
     #it will also expect the controllers to be in sub-directories named after the symbol
 
+  end
+
+  resources :answers, shallow: true, only: [] do
+    resources :votes, only: [:create, :update, :destroy]
   end
 
   resources :job_posts, only: [:new, :create, :show, :destroy, :edit, :update]

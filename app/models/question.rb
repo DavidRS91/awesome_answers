@@ -2,7 +2,7 @@ class Question < ApplicationRecord
   belongs_to :user
 
   has_many :taggings, dependent: :destroy
-  has_many :tags, through: :taggings 
+  has_many :tags, through: :taggings
 
   # Database Relationships
   has_many :answers, dependent: :destroy
@@ -16,6 +16,14 @@ class Question < ApplicationRecord
 
   before_validation(:set_view_count)
 
+  include FriendlyId
+  friendly_id :title, use: [:slugged, :history, :finders]
+  #
+  # def to_param
+  #   "#{id}-#{title}".parameterize
+  # end
+
+  mount_uploader :image, ImageUploader
 
   private
 

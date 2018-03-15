@@ -1,20 +1,16 @@
 
-<%= form_for @question do |f| %>
+<%= simple_form_for @question do |f| %>
 <%# ☝🏻 tells rails we want a new form for our Question class %>
-<% if @question.errors.present? %>
+<!-- <% if @question.errors.present? %>
   <p><%= @question.errors.full_messages.join(', ') %></p>
-  <% end %>
-<div class="">
-  <%= f.label :title %>
-  <%= f.text_field :title, class: "form-control" %>
-</div>
+  <% end %> -->
 
-<div class="">
-  <%= f.label :body %>
-  <%= f.text_area :body, class: "form-control" %>
-</div>
-
-<div class="">
+<%= f.input :title %>
+<%= f.input :body %>
+<%= f.input :image %>
+<%= f.association :tags, input_html: {class: 'chosen-select'}  %>
+<%= f.submit class: 'btn btn-primary'%>
+<!-- <div class="">
   <%= f.label :tag_ids, "Tags" %>
   <%= f.collection_select(
     :tag_ids,
@@ -26,6 +22,6 @@
     ) %>
 </div>
 
-<%= f.submit %>
+<%= f.submit %> -->
 
 <% end %>

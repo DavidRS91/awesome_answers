@@ -1,3 +1,7 @@
+<% Rails.logger.info '>>>>>>>>>>>>' %>
+<% Rails.logger.info @question %>
+<% Rails.logger.info @answer %>
+<% Rails.logger.info '>>>>>>>>>>>>' %>
 <div class="tag-list">
   <% @question.tags.order(:name).each do |tag| %>
     <span class="badge badge-pill badge-primary">
@@ -9,6 +13,8 @@
 <h2><%= @question.title %></h2>
 
 <p><%= @question.body %></p>
+
+<%= image_tag @question.image.url(:large) if @question.image.present? %>
 
 <p><small>
   Posted <%= time_ago_in_words(@question.created_at)%> ago
@@ -47,7 +53,10 @@
 
 <h3>Answers</h3>
 
-<%= form_for [@question,@answer] do |f| %>
+
+
+
+<%= form_for [@question, @answer] do |f| %>
 <% if @answer.errors.present? %>
   <%= @answer.errors.full_messages.join(', ') %>
 <% end %>
@@ -62,6 +71,54 @@
   <% @answers.each do |answer| %>
     <div class="answer-list-item">
       <p><%= answer.body %><br>
+        <% vote = answer.votes.find_by(user: current_user) %>
+          <span class="vote-widget">
+            <% if vote.nil? %>
+
+              <%= link_to(
+                fa_icon('arrow-up'),
+                answer_votes_path(answer, {is_up: true}),
+                method: :post
+              ) %>
+              <%= answer.vote_total %>
+              <%= link_to(
+                fa_icon('arrow-down'),
+                answer_votes_path(answer, {is_up: false}),
+                method: :post
+              ) %>
+
+            <% elsif vote.is_up? %>
+
+              <%= link_to(
+                fa_icon('arrow-up'),
+                vote_path(vote),
+                method: :delete,
+                class: 'active'
+              ) %>
+              <%= answer.vote_total %>
+              <%= link_to(
+                fa_icon('arrow-down'),
+                vote_path(vote, {is_up: false}),
+                method: :patch
+              ) %>
+
+            <% else %>
+
+                <%= link_to(
+                  fa_icon('arrow-up'),
+                  vote_path(vote, {is_up: true}),
+                  method: :patch
+                ) %>
+                <%= answer.vote_total %>
+                <%= link_to(
+                  fa_icon('arrow-down'),
+                  vote_path(vote),
+                  method: :delete,
+                  class: 'active'
+                ) %>
+
+            <% end %>
+          </span>
         <small>
         Answered <%= time_ago_in_words(answer.created_at)%> ago •
         By: <%= answer.user&.full_name || '[DELETED]' %>
