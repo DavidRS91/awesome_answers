@@ -45,7 +45,16 @@ class Api::ApplicationController < ApplicationController
   helper_method :current_usere
 
   def authenticate_user!
-    head :unauthorized unless current_user.present?
+    unless current_user.present?
+      render(
+        json: {
+          errors: [{
+            type: "Unauthorized"
+          }]
+        },
+        status: :unauthorized
+      )
+    end
   end
 
   protected

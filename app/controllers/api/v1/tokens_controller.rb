@@ -3,7 +3,7 @@
     # their email & password to receive a token (to sign in).
     def create
       user = User.find_by(email: params[:email])
-  
+
       if user&.authenticate(params[:password])
         render json: {
           jwt: encode_token({
@@ -17,13 +17,21 @@
         # Authentication fails
         # Fool attackers by always responding with a 404 instead
         # of instructive error message like "Incorrect Password"
-        head :not_found
+        # head :not_found
+        render(
+          json: {
+            errors: [{
+              type: "Not Found"
+            }]
+          },
+          status: :not_found
+        )
       end
     end
-  
+
     private
     def encode_token(payload = {}, exp = 24.hours.from_now)
-  
+
       JWT.encode(
         payload,
         Rails.application.secrets.secret_key_base
